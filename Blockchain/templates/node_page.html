@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			h1{
+				color:red;
+			}
+		</style>
+		<title>Node {{address}}</title>
+	</head>
+	<body>
+
+		<h1> Node admin page running in  {{address}}</h1>
+		<div>  </div>
+		
+		
+		{%if connected%}
+		<h3>Connected to the net!</h3>
+		{%else%}
+		<h4> Currently not connected to any other node </h4>
+		{%endif%}
+		<h4 style='display:inline'> Current active nodes </h4> 
+		<form style='display:inline' action='refresh_nodes' method='get'>
+			<input type='submit' value='Refresh'/>
+		</form>
+		<ul>
+			{% for peer in peers %}
+				{%if peer == address%}
+				<li>{{peer}}(current)</li>
+				{%else%}
+				<li>{{peer}}</li>
+				{%endif%}
+			{% endfor %}
+		</ul>
+		
+		<form action='register_with' method='post'>
+			<input style='width:200px' type='text' placeholder='add any node address to connect' name='node_address'/>
+			<input type='submit' value='Connect!'/>
+		</form>
+
+
+		
+
+
+
+	</body>
+</html>

@@ -1,0 +1,254 @@
+
+{% extends 'base.html' %}
+{%block body%}
+
+<div id='indexpage'></div>
+
+<div style='height:50px'></div>
+
+
+<div id='containerindex' class='container-fluid' style='padding-left:30px'>
+	<div class='row'>
+
+
+
+
+		<div class='col-2'>
+
+			<div class='row'>
+			
+			<div> Connected to <b>{{node_address}}</b> node </div>
+			
+			</div>
+			<div class='row'>
+				<h4> Current active nodes </h4>
+			</div>
+
+				{% for peer in peers %}
+			<div class='row'>	
+						<form action="{% url 'change_node' %}" method='post'>
+							{% csrf_token %}
+							<input style='font-size:10px;width:12rem;' class='btn {% if peer == node_address %}btn-dark{% else %}btn-light{% endif %}' type='submit' name='node_address' value='{{peer}}'/>
+						</form>
+			</div>		
+				{% endfor %}
+			<div style='height:30px'></div>
+			<div class='row'>
+
+			<small>UNCONFIRMED TRANSACTIONS FOR THIS NODE</small>
+			</div>
+			{% for tx in unconfirmed_transactions %}
+			<div class='row card'>
+				
+				<div class='col-auto' style='border:0 0 0 1px'>
+					<div class='row'>
+						<div style='font-size:6px'>From:{{tx.origin}}</div>
+					</div>
+					<div class='row'>
+						<div style='font-size:6px'>To:{{tx.destination}}</div>
+					</div>
+					<div class='row'>
+						<div style='font-size:6px'>{{tx.amount}} </div>
+					</div>
+				</div>
+				
+			</div>
+			{% endfor %}
+			<div style='height:20px'></div>
+			<div class='row'>
+				<form action='mine_request' method='post'>
+					{% csrf_token %}
+					<input  class='btn btn-danger' type='submit'value='Mine'/>
+				</form>
+			</div>
+			<div class='row' style='height:50px'></div>
+		</div>
+
+
+
+
+
+
+
+		<div class='col-xl'>
+
+		{% if message %}
+		<div class='row jutify-content-around'>
+			<div class='card col-auto'><h1>{{message}}</h1></div>
+		</div>
+		<div class='row'>
+			<div class='col'>If you know any other node, enter it here</div>
+		</div>
+		
+			
+			<form action="{% url 'change_node' %}" method='post'>
+				{% csrf_token %}
+				<div class='form-group row'>
+				<input class='form-control col' type='text' name='node_address' placeholder='node address'/>
+				<input type='submit' class='btn btn-dark col-2 offset-1' value='Change node'/>
+				</div>
+			</form>
+	
+		
+
+		{% endif %}
+
+		<div class='row justify-content-between'>
+		
+			<h2 class='col-auto'>ACCOUNTS</h2>
+			<div class='col-auto'><button class='btn' id='new_account'>New account</button></div>
+		</div>
+		<div id='formnewaccount'>
+			<div style='height:20px;'></div>
+			<form style='width:100%' action="{% url 'new_account' %}" method='post'>
+				{% csrf_token %}
+				<div class='form-group row justify-content-end'>
+					<input class='col-4 form-control' type='text' name='account_name' placeholder='New account name'/>
+					<input type='submit' value='Create' class='btn btn-dark col-auto'/>
+					<div class='col-1'></div>
+				</div>
+			</form>
+			<div style='height:20px;'></div>
+		</div>
+		<div class='row'>
+			<table class="table">
+				<thead>
+			    
+				</thead>
+				<tbody>
+					{% for account in accounts %}
+					<tr>
+
+
+
+					{% if account.name == current_account.name %}
+				    <td>
+				    	<form action="{% url 'index' %}" method='post'>
+				    		{% csrf_token %}
+				    		<button style='position:relative;bottom:7px' value='{{account.name}}' name='accountname' class='btn accountname btn-dark' id='button{{account.name}}'>{{account.name}}</button>
+				    		
+				    	</form>
+				    </td>
+				    {% else %}
+				    <td>
+				    	<form action="{% url 'index' %}" method='post'>
+				    		{% csrf_token %}
+				    		<button style='position:relative;bottom:7px' value='{{account.name}}' name='accountname' class='btn btn-light' id='button{{account.name}}'>{{account.name}}</button>
+					    </form>
+				    </td>
+				    {% endif %}
+				    <td id='amount{{account.name}}'>{{account.amount}} Lc</td>
+				    <td>{{account.code}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	
+
+
+
+
+	<div class='row'>
+
+
+		<div class='col-md'>
+			<div class='row justify-content-between'>
+				<h3 class='col'>TRANSACTIONS for {{current_account.name}}</h3>
+				<button id='sendcoin' style='height:40px' class='btn btn-light col-auto'>New Transaction</button>
+			</div>
+			<div id='formsendcoin' class='row'>
+				<div class='col card sendform'>
+					<form action="{% url 'check_transaction' %}"method='post'>
+
+						{% csrf_token %}
+						
+				
+							
+						<div class="form-group row">
+							<span class='col-2' style='position:relative;top:8px'>Account origin</span>
+							<select name='origin' class="form-control col-4">
+								{% for account in accounts %}
+						    	<option value='{{account.code}}'>{{account.name}}</option>
+								{% endfor %}
+						    	
+							</select>
+						
+							<input type='text' class='form-control col-4 offset-1' name='amount' placeholder='amount'/>
+						</div>
+						
+						<div class='form-group row'>
+							<span class='col-2' style='position:relative;top:8px'>Account destination</span>
+							<input type='text' class='form-control col-9' name='destination' placeholder='code'/>
+							
+						</div>
+						<div class='row justify-content-end'>
+							<input id='sendtransaction' style='position:relative;' class='col-auto btn btn-light' type='submit' value='Send'/>
+							<div class='col-1'></div>
+						</div>
+						
+					</form>
+				</div>
+			</div>
+			<div style='height:50px'></div>
+			{% for post in posts %}
+			<div class='row card' style='margin-bottom:10px'>
+				{% if user.username == 'admin' %}
+
+				<div class='col-auto'>From: {{post.origin}}</div>
+				<div class='col-auto'>To: {{post.destination.code}}</div>
+				<div class='col-auto'>Amount: {{post.amount}}</div>
+				<div class='col-auto'><b>Block info:</b> index: {{post.index}} - hash:{{post.hash}} - previous hash:{{post.previous_hash}}</div>
+
+				{% else %}
+
+
+
+				<div id='short_tx_card'>
+				</div>
+
+				<div id='long_tx_card'>
+				<div class='col-auto'>
+					From: <span style='font-weight:bold'>{% if post.origin_account %}{{post.origin_account}}{% elif post.origin_user %}{{post.origin_user}}{% endif %} - </span><small>{{post.origin}}</small>
+				</div>
+				<div class='col-auto'>
+					To: <span style='font-weight:bold'>{% if post.destination_account %}{{post.destination_account}}{% elif post.destination_user %}{{post.destination_user}}{% endif %} - </span><small>{{post.destination}}</small>
+				</div>
+				<div class='col-auto'>
+					Amount: {% if post.origin_account %}<span style='color:red'>-{{post.amount}} Lc</span>{% else %}<span style='color:green'>+{{post.amount}} Lc</span>{% endif %}({{post.total}})
+				</div>
+				<!-- <div class='col-auto'>
+					At: {{post.hour}}
+				</div> -->
+				</div>
+
+
+				{% endif %}
+
+				
+			</div>
+			{% endfor %}
+			<div style='height:50px'></div>
+			
+			
+			
+			
+		</div>
+
+
+
+
+	</div>
+
+
+
+
+
+	
+	</div>
+</div>
+<div style='height:150px'></div>
+
+
+
+{% endblock %}

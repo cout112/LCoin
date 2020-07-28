@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+
+
+{% block body %}
+
+
+
+
+
+<div style='height:170px'></div>
+<div class='container-fluid'>
+	<div class='row justify-content-center'>
+
+
+		<div class='col-6 card' style='background-color: #fff3e6;'>
+
+			<div class='card-body' >
+
+				<div class='card-title'>NEW TRANSACTION</div>
+				<div>From: <b>{{user.username}}</b>({{accounts.name}}) -<small> {{origin}}</small> </div>
+				<div>To: <b>{{destination.user.username}}</b> - <small>{{destination.code}}</small></div>
+				
+				<div>Amount: {{amount}}</div>
+				{% if message %}
+				<small class='smallwarning'>{{message}}</small>
+				{% endif %}
+				
+					
+
+				{% if not message %}
+				<form action="{% url 'send_transaction' %}" method="post">
+					{% csrf_token %}
+					<input type='hidden' name='origin' value='{{origin}}'/>
+					<input type='hidden' name='destination' value='{{destination.code}}'/>
+					<input type='hidden' name='amount' value='{{amount}}'/>
+					<!-- <input class='btn btn-dark' type='submit' value='Send and Mine Lcoin with {{node}} node'/> -->
+					<input class='btn btn-dark' type='submit' value='Send to node {{node}}'/>
+				</form>
+				{% else %}
+			
+				<form action="{% url 'index' %}" method='get'>
+					{% csrf_token %}
+					<input class='btn btn-dark' type='submit' value='Go back'/>
+				
+				</form>
+				{% endif %}
+
+		</div>
+
+
+	</div>
+</div>
+
+{% endblock %}

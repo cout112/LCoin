@@ -1,0 +1,48 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+		<link rel='stylesheet' href="{% static 'manager/style.css' %}"/>
+
+		<link rel='icon' href="{% static 'manager/favicon.ico' %}" type='image/x-icon'/>
+		<script src="{% static 'manager/auth.js' %}"></script> 
+		
+		<title>Lbank</title>
+		</head>
+
+
+	<body>
+
+
+	<div class='container-fluid'>
+
+		<div class='row justify-content-between' style='height:120px;background-color:#ffcc99;padding: 30px'>
+
+			<div class='col-auto'>
+				<img src="{% static 'manager/logo.jpg' %}" style="position:relative;bottom:30px;right:45px;height:120px" />
+				<!-- <h1 style='display:inline'>LCOIN</h1><small style='display:inline'> Using Lbank</small>
+			
+			<h6> This is a (de)centralized blockchain app</h6>
+--> 		</div>
+			<div class='col-auto'>
+				{% if user.is_authenticated %}
+				<form action="{% url 'logout_user' %}" method='post'>
+					{% csrf_token %}
+					<input class='btn btn-danger' type='submit' value='Logout'>
+				</form>
+				{% endif %}
+			</div>
+			
+		</div>
+	</div>
+	
+
+		{% block body %}
+		{% endblock %}
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+	</body>
+</html>
